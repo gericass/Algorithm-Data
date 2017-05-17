@@ -55,6 +55,35 @@ int main(void){
   while(1){
     int menu,x;
     printf("現在のデータ数:%d/%d\n",Size(&s),Capacity(&s));
-    printf("(1)プッシュ (2)ポップ (3)ピーク (4)表示 (0)終了")
+    printf("(1)プッシュ (2)ポップ (3)ピーク (4)表示 (0)終了");
+    scanf("%d",&menu);
+    
+    if(menu==0) break;
+
+    switch(menu){
+      case 1:
+       printf("データ:");
+       scanf("%d",&x);
+       if(Push(&s,x)==-1)
+         puts("¥aエラー:プッシュに失敗しました。");
+       break;
+      case 2:
+       if(Pop(&s,&x)==-1)
+         puts("¥aエラー:ポップに失敗しました。");
+       else
+         printf("ポップしたデータは%dです。¥n",x);
+       break;
+      case 3:
+       if(Peek(&s,&x)==-1)
+         puts("¥aエラー:ピークに失敗しました。");
+       else
+         printf("ピークしたデータは%dです。¥n",x);
+       break;
+      case 4:
+       Print(&s);
+       break;
+
+    }
   }
+  return 0;
 }
