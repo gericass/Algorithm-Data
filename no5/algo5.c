@@ -6,12 +6,13 @@ typedef struct{
   char name[20];
   int height;
   double vision;
-} PhysCheck;
+  
+} PhysCheckStack;
 
 typedef struct{
   int max;
   int ptr;
-  PhysCheck stk[MAX];
+  PhysCheckStack stk[MAX];
 } Stack;
 
 int Initialize(Stack *s,int max){
