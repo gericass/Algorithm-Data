@@ -18,7 +18,6 @@ typedef struct{
   char name[20];
 }PhysCheck;
 
-
 int Initialize(PhysCheckStack *s,int max){
   s->ptr = 0;
   s->max = max;
