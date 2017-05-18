@@ -6,22 +6,26 @@ typedef struct{
   char name[20];
   int height;
   double vision;
-  
-} PhysCheckStack;
+} Data;
 
 typedef struct{
   int max;
   int ptr;
-  PhysCheckStack stk[MAX];
-} Stack;
+  Data stk[MAX];
+} PhysCheckStack;
 
-int Initialize(Stack *s,int max){
+typedef struct{
+  char name[20];
+}PhysCheck;
+
+
+int Initialize(PhysCheckStack *s,int max){
   s->ptr = 0;
   s->max = max;
   return 0;
 }
 
-int Push(Stack *s,char *n,int h,double v){
+int Push(PhysCheckStack *s,char *n,int h,double v){
   if(s->ptr >= s->max) return -1;
   strcpy(s->stk[s->ptr].name, n);
   //s->stk[s->ptr].name = n;
@@ -31,7 +35,7 @@ int Push(Stack *s,char *n,int h,double v){
   return 0;
 }
 
-int Pop(Stack *s,char *n,int *h,double *v){
+int Pop(PhysCheckStack *s,char *n,int *h,double *v){
   if(s->ptr <= 0)return -1;
   s->ptr--;
   strcpy(n,s->stk[s->ptr].name);
@@ -41,7 +45,7 @@ int Pop(Stack *s,char *n,int *h,double *v){
   return (0);
 }
 
-int Peek(Stack *s,char *n,int *h,double *v){
+int Peek(PhysCheckStack *s,char *n,int *h,double *v){
   if(s->ptr <= 0)return -1;
   n = s->stk[s->ptr -1].name;
   *h = s->stk[s->ptr -1].height;
@@ -49,23 +53,38 @@ int Peek(Stack *s,char *n,int *h,double *v){
   return 0;
 }
 
-int Capacity(const Stack *s){
+int Capacity(const PhysCheckStack *s){
   return s->max;
 }
 
-int Size(const Stack *s){
+int Size(const PhysCheckStack *s){
   return s->ptr;
 }
 
-void Print(const Stack *s){
+void Print(const PhysCheckStack *s){
   int i;
   for(i = 0;i< s->ptr;i++)
     printf("%s %d %lf\n",s->stk[i].name,s->stk[i].height,s->stk[i].vision);
   putchar('\n');
 }
 
+int Search(PhysCheckStack *s, PhysCheck *x){
+  int i;
+  int count=0;
+  for(i = 0;i< s->ptr; i++){
+    if(strcmp(s->stk[i].name,x->name)==0){
+      count++;
+      printf("%s %d %lf\n",s->stk[i].name,s->stk[i].height,s->stk[i].vision);
+    }
+  }
+  return count;
+}
+
+
+
 int main(void){
-  Stack s;
+  PhysCheckStack s;
+  PhysCheck p;
   Initialize(&s,MAX);
 
   while(1){
@@ -74,7 +93,7 @@ int main(void){
     int h;
     double v;
     printf("現在のデータ数:%d/%d\n",Size(&s),Capacity(&s));
-    printf("(1)プッシュ (2)ポップ (3)ピーク (4)表示 (0)終了:");
+    printf("(1)プッシュ (2)ポップ (3)ピーク (4)表示 (5)探索 (0)終了:");
     scanf("%d",&menu);
     
     if(menu==0) break;
@@ -105,6 +124,12 @@ int main(void){
       case 4:
        Print(&s);
        break;
+      case 5:
+	scanf("%s",p.name);
+        int res =  Search(&s,&p);
+        if(res==0)
+	  printf("パターンは存在しません。\n");
+        break;
     }
   }
   return 0;
