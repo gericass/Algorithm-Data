@@ -128,7 +128,7 @@ int main(void){
 	scanf("%s",p.name);
         int res =  Search(&s,&p);
         if(res==0)
-	  printf("パターンは存在しません。\n");
+	       printf("パターンは存在しません。\n");
         break;
     }
   }
