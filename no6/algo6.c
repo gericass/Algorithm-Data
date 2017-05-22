@@ -22,15 +22,15 @@ int Initialize(StringStack *s,int max){
 void Terminate(StringStack *s){
     if(s->stk != NULL){
         while(--s->ptr >=0)
-         free(s->stk[s^>ptr]);
+         free(s->stk[s->ptr]);
         free(s->stk);
     }
     s->max = s->ptr = 0;
 }
 
 int Push(StringStack *s,char *x){
-    if(s->ptr >= s->max)return -1;
-    if((s->stk[s->ptr]=calloc(strlen(x)+1,sizeof(char))==NULL))
+    if(s->ptr >= s->max) return -1;
+    if((s->stk[s->ptr]=calloc(strlen(x)+1,sizeof(char)))==NULL)
      return -1;
     strcpy(s->stk[s->ptr],x);
     s->ptr++;
