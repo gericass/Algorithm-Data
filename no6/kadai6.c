@@ -1,14 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define MAX 10
-
-
-typedef struct{
-  char name[20];
-  int height;
-  double vision;
-} Data;
 
 
 typedef struct{
@@ -106,7 +98,6 @@ int Search(PhysCheckStack *s, char *x){
 
 int main(void){
   PhysCheckStack s;
-  PhysCheck p;
   char name[100];
   int mx;
   printf("スタックの大きさを入力してください。");
