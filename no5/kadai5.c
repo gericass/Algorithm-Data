@@ -2,7 +2,6 @@
 #include <string.h>
 #define MAX 10
 
-
 typedef struct{
   char name[20];
   int height;
@@ -18,6 +17,9 @@ typedef struct{
 typedef struct{
   char name[20];
 }PhysCheck;
+
+
+
 
 int Initialize(PhysCheckStack *s,int max){
   s->ptr = 0;
