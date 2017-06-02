@@ -27,17 +27,33 @@ void Terminate(StringQueue *q){
   }
 }
 
-int Enque(StringQueue *q,char *x){
-  if(q->num >=q->max)
-    return -1;
-  else{
-    q->num++;
-    q->rear++;
-    q->que[q->rear]=calloc(strlen(x)+1,sizeof(char));
-    strcpy(q->que[q->rear],x);
-    if(q->rear == q->max)q->rear = 0;
-    return 0;
+
+int Count(StringQueue *q, char *x){
+  int count = 0;
+for(int i = 0;i<q->num;i++){
+  int key = strcmp(x,q->que[(i+q->front)%q->max+1]);
+  if(key==0){
+    count++;
   }
+}
+return count;
+}
+
+
+int Enque(StringQueue *q,char *x){
+  if(q->num >=q->max){
+   q->que = realloc(q->que,(q->max+7)*sizeof(char *));
+   q->max = q->max + 7;
+   
+  }
+  
+  q->num++;
+  q->rear++;
+  q->que[q->rear]=calloc(strlen(x)+1,sizeof(char));
+  strcpy(q->que[q->rear],x);
+  //if(q->rear == q->max)q->rear = 0;
+  return 0;
+  
 }
 
 int Deque(StringQueue *q,char *x){
@@ -46,16 +62,21 @@ int Deque(StringQueue *q,char *x){
   else{
     q->num--;
     q->front++;
-    q->que[q->front] = calloc(strlen(x)+1,sizeof(char));
+    x = calloc(strlen(x)+1,sizeof(char));
     strcpy(x,q->que[q->front]);
-    if(q->front == q->max)q->front = 0;
+    if(q->max-q->num >= 15){
+      q->que = realloc(q->que,(q->max-5)*sizeof(char *));
+      q->max = q->max - 5;
+    }
+    //if(q->front == q->max)q->front = 0;
     return 0;
-  }
+  } 
 }
 
 int Peek(const StringQueue *q,char *x){
   if(q->num <= 0)
     return -1;
+  //q->que[q->front] = calloc(strlen(x)+1,sizeof(char));
   strcpy(x,q->que[q->front]);
   return 0;
 }
@@ -87,10 +108,11 @@ int main(void){
     while(1){
       int m;
       char x[82];
+      char y[82];
        
 
         printf("現在のデータ数:%d/%d\n",Size(&que),Capacity(&que));
-        printf("(1)エンキュー(2)デキュー(3)ピーク(4)表示(0)終了:");
+        printf("(1)エンキュー(2)デキュー(3)ピーク(4)表示(5)パターンの計数(0)終了:");
         scanf("%d",&m);
 
         if(m==0) break;
@@ -113,10 +135,19 @@ int main(void){
              if(Peek(&que,x)==-1)
               puts("\aエラー:ピークに失敗しました。\n");
              else
-	       printf("ピークしたデータは%sです。\n",x);
+              printf("ピークしたデータは%sです。\n",x);
              break;
             case 4:
              Print(&que);
+             break;
+            case 5:
+             scanf("%s",y);
+             int c = Count(&que,y);
+             if(c==0){
+               printf("パターンは存在しません。\n");
+             }else{
+               printf("パターンの数:%d\n",c);
+             }
              break;
         }
     }
