@@ -1,38 +1,51 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX 10
+#include <stdlib.h>
+
 
 typedef struct{
-  char name[20];
-  int height;
   double vision;
-} Data;
+  int height;
+}Body;
+
+typedef struct{
+  char *name;
+  Body body;
+}PhysCheck;
 
 typedef struct{
   int max;
   int ptr;
-  Data stk[MAX];
+  PhysCheck *stk;
 } PhysCheckStack;
-
-typedef struct{
-  char name[20];
-}PhysCheck;
-
-
 
 
 int Initialize(PhysCheckStack *s,int max){
+  if((s->stk = calloc(max,sizeof(PhysCheck)))==NULL)
+   return -1;
   s->ptr = 0;
   s->max = max;
   return 0;
 }
 
+void Terminate(PhysCheckStack *s){
+  if(s->stk !=NULL){
+    while(--s->ptr>=0)
+     free(s->stk[s->ptr].name);
+    free(s->stk);
+  }
+  s->max = s->ptr = 0;
+}
+
+
 int Push(PhysCheckStack *s,char *n,int h,double v){
   if(s->ptr >= s->max) return -1;
+  if((s->stk[s->ptr].name = calloc(strlen(n)+1,sizeof(char)))==NULL)
+   return -1;
   strcpy(s->stk[s->ptr].name, n);
   //s->stk[s->ptr].name = n;
-  s->stk[s->ptr].height = h;
-  s->stk[s->ptr].vision = v;
+  s->stk[s->ptr].body.height = h;
+  s->stk[s->ptr].body.vision = v;
   s->ptr++;
   return 0;
 }
@@ -42,16 +55,16 @@ int Pop(PhysCheckStack *s,char *n,int *h,double *v){
   s->ptr--;
   strcpy(n,s->stk[s->ptr].name);
   //n = s->stk[s->ptr -1].name;
-  *h = s->stk[s->ptr].height;
-  *v = s->stk[s->ptr].vision;
+  *h = s->stk[s->ptr].body.height;
+  *v = s->stk[s->ptr].body.vision;
   return (0);
 }
 
 int Peek(PhysCheckStack *s,char *n,int *h,double *v){
   if(s->ptr <= 0)return -1;
   n = s->stk[s->ptr -1].name;
-  *h = s->stk[s->ptr -1].height;
-  *v = s->stk[s->ptr -1].vision;
+  *h = s->stk[s->ptr -1].body.height;
+  *v = s->stk[s->ptr -1].body.vision;
   return 0;
 }
 
@@ -66,17 +79,17 @@ int Size(const PhysCheckStack *s){
 void Print(const PhysCheckStack *s){
   int i;
   for(i = 0;i< s->ptr;i++)
-    printf("%s %d %lf\n",s->stk[i].name,s->stk[i].height,s->stk[i].vision);
+    printf("%s %d %lf\n",s->stk[i].name,s->stk[i].body.height,s->stk[i].body.vision);
   putchar('\n');
 }
 
-int Search(PhysCheckStack *s, PhysCheck *x){
+int Search(PhysCheckStack *s, char *x){
   int i;
   int count=0;
   for(i = 0;i< s->ptr; i++){
-    if(strcmp(s->stk[i].name,x->name)==0){
+    if(strcmp(s->stk[i].name,x)==0){
       count++;
-      printf("%s %d %lf\n",s->stk[i].name,s->stk[i].height,s->stk[i].vision);
+      printf("%s %d %lf\n",s->stk[i].name,s->stk[i].body.height,s->stk[i].body.vision);
     }
   }
   return count;
@@ -85,7 +98,7 @@ int Search(PhysCheckStack *s, PhysCheck *x){
 
 int main(void){
   PhysCheckStack s;
-  PhysCheck p;
+  char name[100];
   int mx;
   printf("スタックの大きさを入力してください。");
   scanf("%d",&mx);
@@ -130,13 +143,14 @@ int main(void){
        Print(&s);
        break;
       case 5:
-	scanf("%s",p.name);
-        int res =  Search(&s,&p);
+	      scanf("%s",name);
+        int res =  Search(&s,name);
         if(res==0)
 	  printf("パターンは存在しません。\n");
         break;
     }
   }
+  Terminate(&s);
   return 0;
 }
 
