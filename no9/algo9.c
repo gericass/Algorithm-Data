@@ -17,8 +17,8 @@ typedef struct __node{
 } Dnode;
 
 typedef struct {
-    Node *head;
-    Node *crnt;
+    Dnode *head;
+    Dnode *crnt;
 } Dlist;
 
 int MemberNoCmp(const Member *x, const Member *y){
@@ -53,8 +53,8 @@ static Dnode *AllocDnode(void){
 
 static void SetDnode(Dnode *n,const Member *x, Dnode *prev, Dnode *next){
     n->data = *x;
-    n->prev = prev;
-    n->next = next;
+    n->prev = (Dnode *) prev;
+    n->next = (Dnode *) next;
 }
 
 static int IsEmpty(const Dlist *list){
@@ -64,7 +64,7 @@ static int IsEmpty(const Dlist *list){
 void Initialize(Dlist *list){
     Dnode *dummyNode = AllocDnode();
     list->head = list->crnt = dummyNode;
-    dymmyNode->prev = dummyNode->next = dummyNode;
+    dummyNode->prev = dummyNode->next = dummyNode;
 }
 
 void PrintCurrent(const Dlist *list){
@@ -118,62 +118,24 @@ void Remove(Dlist *list, Dnode *p){
         list->crnt = list->head->next;
 }
 
-void RemoveFront(List *list){
+void RemoveFront(Dlist *list){
     if(!IsEmpty(list))
         Remove(list,list->head->next);
 }
 //ここまで
-void RemoveRear(List *list){
-    if(list->head != NULL){
-        if((list->head)->next==NULL)
-            RemoveFront(list);
-        else{
-            Node *ptr =list->head;
-            Node *pre;
-
-            while(ptr->next != NULL){
-                pre=ptr;
-                ptr = ptr->next;
-            }
-            pre->next = NULL;
-            free(ptr);
-            list->crnt = pre;
-        }
-    }
+void RemoveRear(Dlist *list){
+   if(!IsEmpty(list))
+    Remove(list,list->head->prev);
 }
 
-void RemoveCurrent(List *list){
-    if(list->head != NULL){
-        if(list->crnt == list->head)
-            RemoveFront(list);
-        else{
-            Node *ptr = list->head;
-
-            while(ptr->next != list->crnt)
-                ptr = ptr->next;
-            ptr->next = list->crnt->next;
-            free(list->crnt);
-            list->crnt = ptr;
-        }
-    }
+void RemoveCurrent(Dlist *list){
+    if(list->crnt != list->head)
+        Remove(list,list->crnt);
 }
 
-void Clear(List *list){
-    while(list->head!=NULL)
+void Clear(Dlist *list){
+    while(!IsEmpty(list))
         RemoveFront(list);
-    list->crnt = NULL;
-}
-
-void PrintCurrent(const List *list){
-    if(list->crnt==NULL)
-        printf("着目ノードはありません。");
-    else
-        PrintMember(&list->crnt->data);
-}
-
-void PrintLnCurrent(const List *list){
-    PrintCurrent(list);
-    putchar('\n');
 }
 
 void Print(const Dlist *list){
@@ -191,8 +153,9 @@ void Print(const Dlist *list){
     }
 }
 
-void  Terminate(List *list){
+void  Terminate(Dlist *list){
     Clear(list);
+    free(list->head);
 }
 
 typedef enum {
@@ -223,12 +186,15 @@ Menu SelectMenu(void){
 
 int main(void){
     Menu menu;
-    List list;
-    Member x;
+    Dlist list;
+   
 
     Initialize(&list);
 
     do{
+        int n;
+        Member x;
+        Member *ptr;
         switch(menu = SelectMenu()){
             case INS_FRONT:
                 x = ScanMember("先頭に挿入",MEMBER_NO | MEMBER_NAME);
