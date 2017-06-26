@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define swap(type,x,y) do {type t; t=x;x=y;y=t;}while(0)
+
+#define ASCENDING
+#define DESCENDING
+
+typedef struct{
+  int no;
+  char name[20];
+}Member;
+
+int MemberNoCmp(const Member *x,const Member *y){
+  return x->no < y->no ? -1 : x->no > y->no ? 1 : 0;
+}
+
+int MemberNameCmp(const Member *x, const Member *y){
+  return strcmp(x->name,y->name);
+}
+
+void PrintLnMember(const Member *x){
+  printf("%d %s\n",.x->no,x->name);
+}
