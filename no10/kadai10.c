@@ -33,7 +33,6 @@ int Push(Stack *s, char *x) {
 int Pop(Stack *s, char *x) {
     if (s->ptr <= 0) return -1;
     strcpy(x, s->stk[--s->ptr]);
-    
     return 0;
 }
 
@@ -51,6 +50,7 @@ void recur3(char *st) {
 
     while(1){
         if( (strlen(st)) > 0 ){
+        printf("%c",*st);
         Push(&stk, st);
         if (strlen(st)>1) st += 2;
         else st++;

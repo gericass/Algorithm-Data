@@ -24,7 +24,8 @@ void PrintLnMember(const Member *x){
   printf("%d %s\n",x->no,x->name);
 }
 
-void bubble(Member *a,int n,int compare(const Member *x,const Member *y),int order){
+void shaker(Member *a,int n,int compare(const Member *x,const Member *y),int order){
+  /*
   int i,j;
   for (i = 0;i<n-1;i++){
     for(j=n-1;j>i;j--){
@@ -32,6 +33,29 @@ void bubble(Member *a,int n,int compare(const Member *x,const Member *y),int ord
 	      swap(Member,a[j-1],a[j]);
     }
   }
+  */
+  int left = 0;
+  int right = n - 1;
+  int last = right;
+
+  while (left < right){
+		int j;
+		for (j = right; j > left; j--){
+			if (compare(a+j-1+order,a+j-order)>0){
+				swap(Member, a[j - 1], a[j]);
+				last = j;
+			}
+		}
+		left = last;
+
+		for (j = left; j < right; j++){
+			if (compare(a+j-order,a+j+1-order)>0){
+				swap(Member, a[j], a[j + 1]);
+				last = j;
+			}
+		}
+		right = last;
+	}
 }
 
 
@@ -82,16 +106,16 @@ int main(void){
     int n;
     switch(menu=SelectMenu()){
       case ASCEND_NO:
-        bubble(data,ndata,MemberNoCmp,ASCENDING);
+        shaker(data,ndata,MemberNoCmp,ASCENDING);
         break;
       case ASCEND_NAME:
-        bubble(data,ndata,MemberNameCmp,ASCENDING);
+        shaker(data,ndata,MemberNameCmp,ASCENDING);
         break;
       case DESCEND_NO:
-        bubble(data,ndata,MemberNoCmp,DESCENDING);
+        shaker(data,ndata,MemberNoCmp,DESCENDING);
         break;
       case DESCEND_NAME:
-        bubble(data,ndata,MemberNameCmp,DESCENDING);
+        shaker(data,ndata,MemberNameCmp,DESCENDING);
         break;
       case PRINT_ALL:
         Print(data,ndata);
