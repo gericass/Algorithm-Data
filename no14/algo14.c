@@ -46,21 +46,25 @@ static void updownheap(Member *a, int left, int right,
  int cr = cl + 1; /* 右の子 */
  child = (cr <= right && compare(a + cr, a + cl) >0 ) ? cr : cl;
  /* 昇順なら大きい方，降順なら小さい方 */
- if (compare (&temp, a + child) >= 0)
- break;
+ if (compare (&temp, a + child) >= 0){
+   printf("num\n");
+   break;
+ }
  a[parent] = a[child];
  }
  a[parent] = temp;
 }
 /*--- ヒープソート ---*/
 void heapsort(Member *a, int n, int compare(const Member *y, const Member *z)){
- int i;
- for (i = (n - 1) / 2; i >= 0; i--)
- updownheap(a, i, n - 1, compare);
- for (i = n - 1; i > 0; i--) {
- swap(Member , a[0], a[i]);
- updownheap(a, 0, i - 1, compare);
- }
+  int i;
+  for (i = (n - 1) / 2; i >= 0; i--){
+   updownheap(a, i, n - 1, compare);
+   printf("i = %d, no = %d, name = %s\n",i,a->no,a->name);
+  }
+  for (i = n - 1; i > 0; i--) {
+   swap(Member , a[0], a[i]);
+   updownheap(a, 0, i - 1, compare);
+  }
 }
 /*--- メニュー ---*/
 typedef enum {
